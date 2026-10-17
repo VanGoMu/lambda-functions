@@ -1,0 +1,18 @@
+# Pull requests: lint, tests and package of every function, without AWS.
+# One job per function; a new function is a copy of a job block.
+name: ci
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  hello-world:
+    uses: VanGoMu/lamda-cicd-reusable-simplified/.github/workflows/lambda.yml@v1
+    with:
+      function-name: lfs-hello-world
+      source-dir: lambdas/hello-world/src
+      tests-dir: lambdas/hello-world/tests
+      smoke-event: lambdas/hello-world/event.json

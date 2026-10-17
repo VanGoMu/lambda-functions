@@ -1,0 +1,35 @@
+# main -> dev (direct) · tags v* -> prod (10 % canary for 5 minutes) · manual run -> either.
+# Rolling back is deploying an older tag: gh workflow run deploy.yml --ref vX.Y.Z -f environment=prod
+# One job per function; a new function is a copy of a job block.
+name: deploy
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        options: [dev, prod]
+        default: dev
+
+permissions:
+  contents: read
+
+jobs:
+  hello-world:
+    uses: VanGoMu/lamda-cicd-reusable-simplified/.github/workflows/lambda.yml@v1
+    permissions:
+      contents: read
+      id-token: write
+    with:
+      function-name: lfs-hello-world
+      source-dir: lambdas/hello-world/src
+      tests-dir: lambdas/hello-world/tests
+      smoke-event: lambdas/hello-world/event.json
+      environment-variables: '{"GREETING": "Hello", "LOG_LEVEL": "INFO"}'
+      environment: >-
+        ${{ (github.ref_type == 'tag' || inputs.environment == 'prod') && 'prod' || 'dev' }}
+      canary-percent: ${{ (github.ref_type == 'tag' || inputs.environment == 'prod') && 10 || 0 }}
+      canary-minutes: 5
