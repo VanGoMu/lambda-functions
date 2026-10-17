@@ -1,12 +1,13 @@
 # Pull requests: lint, tests and package of every function, without AWS.
 # One job per function; a new function is a copy of a job block.
+# TODO: detection of changes shasum
 name: ci
 
 on:
   pull_request:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   hello-world:
