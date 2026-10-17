@@ -19,7 +19,7 @@ permissions:
 
 jobs:
   hello-world:
-    uses: VanGoMu/lamda-cicd-reusable-simplified/.github/workflows/lambda.yml@v1
+    uses: VanGoMu/lamda-cicd-reusable-simplified/.github/workflows/lambda.yml@main
     permissions:
       contents: read
       id-token: write
